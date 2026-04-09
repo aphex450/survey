@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRコード管理｜アンケートシステム管理画面</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- QRコード生成ライブラリ -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #003366;
+            --primary-light: #004d99;
+            --accent: #F59E0B;
+            --bg: #F0F4F8;
+            --card-bg: #FFFFFF;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --text-white: #FFFFFF;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(0, 51, 102, 0.08);
+            --radius: 16px;
+            --radius-sm: 12px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* ===== ヘッダー ===== */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 20px 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: var(--text-white);
+            font-size: 1.2rem;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        /* ===== メイン ===== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        /* ===== 設定セクション ===== */
+        .config-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .config-section h2 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* ===== スタッフリスト ===== */
+        .staff-list {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .staff-list h2 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .staff-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .staff-row input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .staff-row input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .staff-row .staff-num {
+            width: 30px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .staff-row .id-input {
+            min-width: 120px;
+            max-width: 160px;
+        }
+
+        .staff-row .name-input {
+            min-width: 100px;
+        }
+
+        .btn-remove {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #FEE2E2;
+            color: #EF4444;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-remove:hover {
+            background: #FECACA;
+        }
+
+        .btn-add {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 2px dashed var(--border);
+            background: transparent;
+            color: var(--text-light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .btn-add:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ===== 生成ボタン ===== */
+        .btn-generate {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--text-white);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+            margin-bottom: 24px;
+        }
+
+        .btn-generate:hover {
+            box-shadow: 0 6px 20px rgba(0, 51, 102, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* ===== QRコード出力 ===== */
+        .qr-output {
+            display: none;
+        }
+
+        .qr-output.visible {
+            display: block;
+        }
+
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .qr-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .qr-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .qr-card .staff-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .qr-card .staff-id-display {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .qr-card canvas,
+        .qr-card img {
+            display: block;
+            margin: 0 auto 12px;
+        }
+
+        .qr-card .qr-url {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            word-break: break-all;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--accent);
+            color: var(--text-white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .btn-download:hover {
+            background: var(--accent);
+            filter: brightness(1.1);
+        }
+
+        /* ===== 印刷ボタン ===== */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            background: var(--primary);
+            color: var(--text-white);
+        }
+
+        /* ===== 印刷用スタイル ===== */
+        @media print {
+            body {
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .header, .config-section, .staff-list, 
+            .btn-generate, .actions, .btn-download,
+            .qr-card .qr-url {
+                display: none !important;
+            }
+
+            .qr-output {
+                display: block !important;
+            }
+
+            .qr-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+
+            .qr-card {
+                box-shadow: none;
+                border: 2px solid #ddd;
+                padding: 20px;
+                break-inside: avoid;
+            }
+
+            .qr-card .staff-name {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* ===== フッター ===== */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-light);
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <h1>📱 QRコード管理画面</h1>
+    <p>九州家庭教師協会｜アンケートシステム</p>
+</header>
+
+<div class="container">
+
+    <!-- ===== 基本設定 ===== -->
+    <div class="config-section">
+        <h2>⚙️ 基本設定</h2>
+        <div class="form-group">
+            <label>アンケートページURL</label>
+            <input type="url" id="baseUrl" value="" placeholder="https://username.github.io/survey/">
+            <div class="form-hint">GitHub PagesにデプロイしたアンケートページのURLを入力してください</div>
+        </div>
+    </div>
+
+    <!-- ===== スタッフリスト ===== -->
+    <div class="staff-list">
+        <h2>👥 営業担当者リスト</h2>
+        <div id="staffContainer">
+            <!-- 8名分のデフォルト行 -->
+        </div>
+        <button class="btn-add" onclick="addStaffRow()">
+            ＋ 担当者を追加
+        </button>
+    </div>
+
+    <!-- ===== 生成ボタン ===== -->
+    <button class="btn-generate" onclick="generateQRCodes()">
+        🔲 QRコードを一括生成
+    </button>
+
+    <!-- ===== QRコード出力 ===== -->
+    <div class="qr-output" id="qrOutput">
+        <div class="actions">
+            <button class="btn-action" onclick="window.print()">
+                🖨️ 印刷する
+            </button>
+            <button class="btn-action" onclick="downloadAll()">
+                📥 一括ダウンロード
+            </button>
+        </div>
+        <div class="qr-grid" id="qrGrid"></div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    &copy; 九州家庭教師協会 ― 管理者専用ページ
+</footer>
+
+<script>
+// ===== 初期スタッフデータ =====
+const defaultStaff = [
+    { id: 'staff_01', name: '担当者A' },
+    { id: 'staff_02', name: '担当者B' },
+    { id: 'staff_03', name: '担当者C' },
+    { id: 'staff_04', name: '担当者D' },
+    { id: 'staff_05', name: '担当者E' },
+    { id: 'staff_06', name: '担当者F' },
+    { id: 'staff_07', name: '担当者G' },
+    { id: 'staff_08', name: '担当者H' },
+];
+
+let staffCount = 0;
+
+// ===== 初期化 =====
+document.addEventListener('DOMContentLoaded', function() {
+    defaultStaff.forEach(staff => addStaffRow(staff.id, staff.name));
+});
+
+// ===== スタッフ行の追加 =====
+function addStaffRow(id = '', name = '') {
+    staffCount++;
+    const container = document.getElementById('staffContainer');
+    const row = document.createElement('div');
+    row.className = 'staff-row';
+    row.id = 'staff-row-' + staffCount;
+    row.innerHTML = `
+        <span class="staff-num">${staffCount}</span>
+        <input type="text" class="id-input" placeholder="ID（例: staff_01）" value="${id}">
+        <input type="text" class="name-input" placeholder="名前（例: 田中太郎）" value="${name}">
+        <button class="btn-remove" onclick="removeStaffRow('staff-row-${staffCount}')" title="削除">✕</button>
+    `;
+    container.appendChild(row);
+}
+
+// ===== スタッフ行の削除 =====
+function removeStaffRow(rowId) {
+    const row = document.getElementById(rowId);
+    if (row) {
+        row.remove();
+        renumberRows();
+    }
+}
+
+// ===== 番号の振り直し =====
+function renumberRows() {
+    const rows = document.querySelectorAll('#staffContainer .staff-row');
+    rows.forEach((row, index) => {
+        row.querySelector('.staff-num').textContent = index + 1;
+    });
+}
+
+// ===== QRコード一括生成 =====
+function generateQRCodes() {
+    const baseUrl = document.getElementById('baseUrl').value.trim();
+    
+    if (!baseUrl) {
+        alert('アンケートページのURLを入力してください');
+        return;
+    }
+    
+    // 末尾のスラッシュを確認
+    const url = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+    
+    const rows = document.querySelectorAll('#staffContainer .staff-row');
+    const grid = document.getElementById('qrGrid');
+    grid.innerHTML = '';
+    
+    let hasData = false;
+    
+    rows.forEach(row => {
+        const staffId = row.querySelector('.id-input').value.trim();
+        const staffName = row.querySelector('.name-input').value.trim();
+        
+        if (!staffId) return;
+        hasData = true;
+        
+        const surveyUrl = url + '?s=' + encodeURIComponent(staffId);
+        
+        // QRコード生成
+        const qr = qrcode(0, 'M');
+        qr.addData(surveyUrl);
+        qr.make();
+        
+        // カードを作成
+        const card = document.createElement('div');
+        card.className = 'qr-card';
+        card.innerHTML = `
+            <div class="staff-name">${staffName || staffId}</div>
+            <div class="staff-id-display">ID: ${staffId}</div>
+            <div id="qr-${staffId}">${qr.createImgTag(5, 8)}</div>
+            <div class="qr-url">${surveyUrl}</div>
+            <button class="btn-download" onclick="downloadQR('qr-${staffId}', '${staffName || staffId}')">
+                📥 ダウンロード
+            </button>
+        `;
+        grid.appendChild(card);
+    });
+    
+    if (!hasData) {
+        alert('少なくとも1名の担当者IDを入力してください');
+        return;
+    }
+    
+    document.getElementById('qrOutput').classList.add('visible');
+    
+    // QRコード表示位置へスクロール
+    document.getElementById('qrOutput').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== 個別ダウンロード =====
+function downloadQR(containerId, name) {
+    const container = document.getElementById(containerId);
+    const img = container.querySelector('img');
+    
+    if (!img) return;
+    
+    // Canvas を使ってダウンロード用のPNG画像を生成
+    const canvas = document.createElement('canvas');
+    const padding = 40;
+    const qrSize = img.width;
+    const canvasWidth = qrSize + padding * 2;
+    const canvasHeight = qrSize + padding * 2 + 60;
+    
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    const ctx = canvas.getContext('2d');
+    
+    // 背景（白）
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    
+    // QRコード
+    ctx.drawImage(img, padding, padding);
+    
+    // ラベル
+    ctx.fillStyle = '#003366';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(name, canvasWidth / 2, qrSize + padding + 40);
+    
+    // ダウンロード
+    const link = document.createElement('a');
+    link.download = `QR_${name}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
+
+// ===== 一括ダウンロード =====
+function downloadAll() {
+    const cards = document.querySelectorAll('.qr-card');
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            const btn = card.querySelector('.btn-download');
+            if (btn) btn.click();
+        }, index * 500);
+    });
+}
+</script>
+
+</body>
+</html>

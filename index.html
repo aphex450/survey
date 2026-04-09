@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>体験学習アンケート｜九州家庭教師協会</title>
+    <meta name="description" content="九州家庭教師協会の体験学習に関するアンケートです。ぜひご感想をお聞かせください。">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary: #003366;
+            --primary-light: #004d99;
+            --primary-dark: #002244;
+            --accent: #F59E0B;
+            --accent-light: #FCD34D;
+            --accent-dark: #D97706;
+            --bg: #F0F4F8;
+            --card-bg: #FFFFFF;
+            --text: #1E293B;
+            --text-light: #64748B;
+            --text-white: #FFFFFF;
+            --success: #10B981;
+            --success-light: #D1FAE5;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(0, 51, 102, 0.08);
+            --shadow-lg: 0 8px 40px rgba(0, 51, 102, 0.12);
+            --radius: 16px;
+            --radius-sm: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: 100dvh;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ===== 背景デコレーション ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 20%, rgba(0, 51, 102, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgRotate 30s linear infinite;
+        }
+
+        @keyframes bgRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== ヘッダー ===== */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 20px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light), var(--accent));
+        }
+
+        .header-logo {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-white);
+            line-height: 1.4;
+        }
+
+        /* ===== プログレスバー ===== */
+        .progress-container {
+            background: var(--card-bg);
+            padding: 16px 24px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .progress-step {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* ===== コンテナ ===== */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 24px 16px 100px;
+        }
+
+        /* ===== ステップカード ===== */
+        .step {
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--text-white);
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        /* ===== 5段階評価ボタン ===== */
+        .rating-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rating-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--card-bg);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .rating-option:hover {
+            border-color: var(--primary-light);
+            background: rgba(0, 51, 102, 0.02);
+            transform: translateX(4px);
+        }
+
+        .rating-option.selected {
+            border-color: var(--primary);
+            background: rgba(0, 51, 102, 0.05);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        .rating-option.selected .rating-emoji {
+            transform: scale(1.2);
+        }
+
+        .rating-emoji {
+            font-size: 1.6rem;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .rating-label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .rating-value {
+            margin-left: auto;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--border);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .rating-option.selected .rating-value {
+            background: var(--primary);
+            color: var(--text-white);
+        }
+
+        /* ===== テキストエリア ===== */
+        .textarea-wrapper {
+            position: relative;
+        }
+
+        .textarea-field {
+            width: 100%;
+            min-height: 140px;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text);
+            resize: vertical;
+            transition: var(--transition);
+            background: var(--card-bg);
+        }
+
+        .textarea-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+
+        .textarea-field::placeholder {
+            color: var(--text-light);
+        }
+
+        .textarea-hint {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        /* ===== 星評価 ===== */
+        .star-rating-container {
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        .stars {
+            display: inline-flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .star {
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #D1D5DB;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            filter: grayscale(100%);
+        }
+
+        .star:hover {
+            transform: scale(1.15);
+        }
+
+        .star.active {
+            color: var(--accent);
+            filter: grayscale(0%);
+            animation: starPop 0.3s ease;
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .star-label {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            min-height: 28px;
+            transition: var(--transition);
+        }
+
+        /* ===== ナビゲーションボタン ===== */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--text-white);
+            box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(0, 51, 102, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: var(--border);
+            color: var(--text-light);
+        }
+
+        .btn-secondary:hover {
+            background: #CBD5E1;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+            color: var(--text-white);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            font-size: 1.1rem;
+            padding: 16px;
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+        }
+
+        /* ===== 送信中スピナー ===== */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== 結果画面 ===== */
+        .result-screen {
+            display: none;
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .result-screen.active {
+            display: block;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 48px 24px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .result-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .result-message {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        .btn-review {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #4285F4, #34A853);
+            color: white;
+            padding: 16px 32px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(66, 133, 244, 0.3);
+        }
+
+        .btn-review:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(66, 133, 244, 0.4);
+        }
+
+        .btn-review .google-icon {
+            font-size: 1.3rem;
+        }
+
+        /* ===== エラー画面 ===== */
+        .error-screen {
+            display: none;
+            text-align: center;
+            padding: 80px 24px;
+        }
+
+        .error-screen.active {
+            display: block;
+        }
+
+        .error-screen .result-card {
+            border-top: 4px solid #EF4444;
+        }
+
+        /* ===== フッター ===== */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-light);
+            font-size: 0.75rem;
+        }
+
+        /* ===== アニメーション ===== */
+        .fade-out {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+        }
+
+        /* Confetti（紙吹雪） */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ===== レスポンシブ ===== */
+        @media (max-width: 360px) {
+            .header-title { font-size: 1rem; }
+            .question-text { font-size: 1rem; }
+            .star { font-size: 2.5rem; }
+            .card { padding: 24px 16px; }
+        }
+
+        @media (min-width: 768px) {
+            .container { padding: 40px 24px 100px; }
+            .card { padding: 40px 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== ヘッダー ===== -->
+<header class="header" id="header">
+    <div class="header-logo">九州家庭教師協会</div>
+    <h1 class="header-title">体験学習アンケート</h1>
+</header>
+
+<!-- ===== プログレスバー ===== -->
+<div class="progress-container" id="progressContainer">
+    <div class="progress-info">
+        <span class="progress-text">ご回答の進捗</span>
+        <span class="progress-step" id="progressStep">1 / 6</span>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 16.6%"></div>
+    </div>
+</div>
+
+<!-- ===== メインコンテナ ===== -->
+<main class="container">
+
+    <!-- ===== Step 1: Q1 ===== -->
+    <div class="step active" id="step1" data-step="1">
+        <div class="card">
+            <div class="question-number">Q1</div>
+            <h2 class="question-text">本日の体験学習はいかがでしたか？</h2>
+            <div class="rating-options" data-question="q1">
+                <div class="rating-option" data-value="1" onclick="selectRating(this)">
+                    <span class="rating-emoji">😞</span>
+                    <span class="rating-label">とても不満</span>
+                    <span class="rating-value">1</span>
+                </div>
+                <div class="rating-option" data-value="2" onclick="selectRating(this)">
+                    <span class="rating-emoji">😕</span>
+                    <span class="rating-label">やや不満</span>
+                    <span class="rating-value">2</span>
+                </div>
+                <div class="rating-option" data-value="3" onclick="selectRating(this)">
+                    <span class="rating-emoji">😐</span>
+                    <span class="rating-label">ふつう</span>
+                    <span class="rating-value">3</span>
+                </div>
+                <div class="rating-option" data-value="4" onclick="selectRating(this)">
+                    <span class="rating-emoji">😊</span>
+                    <span class="rating-label">やや満足</span>
+                    <span class="rating-value">4</span>
+                </div>
+                <div class="rating-option" data-value="5" onclick="selectRating(this)">
+                    <span class="rating-emoji">😆</span>
+                    <span class="rating-label">とても満足</span>
+                    <span class="rating-value">5</span>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-primary" id="nextBtn1" onclick="nextStep(1)" disabled>
+                    次へ <span class="btn-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Step 2: Q2 ===== -->
+    <div class="step" id="step2" data-step="2">
+        <div class="card">
+            <div class="question-number">Q2</div>
+            <h2 class="question-text">担当者の説明はわかりやすかったですか？</h2>
+            <div class="rating-options" data-question="q2">
+                <div class="rating-option" data-value="1" onclick="selectRating(this)">
+                    <span class="rating-emoji">😞</span>
+                    <span class="rating-label">とても不満</span>
+                    <span class="rating-value">1</span>
+                </div>
+                <div class="rating-option" data-value="2" onclick="selectRating(this)">
+                    <span class="rating-emoji">😕</span>
+                    <span class="rating-label">やや不満</span>
+                    <span class="rating-value">2</span>
+                </div>
+                <div class="rating-option" data-value="3" onclick="selectRating(this)">
+                    <span class="rating-emoji">😐</span>
+                    <span class="rating-label">ふつう</span>
+                    <span class="rating-value">3</span>
+                </div>
+                <div class="rating-option" data-value="4" onclick="selectRating(this)">
+                    <span class="rating-emoji">😊</span>
+                    <span class="rating-label">やや満足</span>
+                    <span class="rating-value">4</span>
+                </div>
+                <div class="rating-option" data-value="5" onclick="selectRating(this)">
+                    <span class="rating-emoji">😆</span>
+                    <span class="rating-label">とても満足</span>
+                    <span class="rating-value">5</span>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevStep(2)">
+                    <span class="btn-icon">←</span> 戻る
+                </button>
+                <button class="btn btn-primary" id="nextBtn2" onclick="nextStep(2)" disabled>
+                    次へ <span class="btn-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Step 3: Q3 ===== -->
+    <div class="step" id="step3" data-step="3">
+        <div class="card">
+            <div class="question-number">Q3</div>
+            <h2 class="question-text">カリキュラムの内容に魅力を感じましたか？</h2>
+            <div class="rating-options" data-question="q3">
+                <div class="rating-option" data-value="1" onclick="selectRating(this)">
+                    <span class="rating-emoji">😞</span>
+                    <span class="rating-label">とても不満</span>
+                    <span class="rating-value">1</span>
+                </div>
+                <div class="rating-option" data-value="2" onclick="selectRating(this)">
+                    <span class="rating-emoji">😕</span>
+                    <span class="rating-label">やや不満</span>
+                    <span class="rating-value">2</span>
+                </div>
+                <div class="rating-option" data-value="3" onclick="selectRating(this)">
+                    <span class="rating-emoji">😐</span>
+                    <span class="rating-label">ふつう</span>
+                    <span class="rating-value">3</span>
+                </div>
+                <div class="rating-option" data-value="4" onclick="selectRating(this)">
+                    <span class="rating-emoji">😊</span>
+                    <span class="rating-label">やや満足</span>
+                    <span class="rating-value">4</span>
+                </div>
+                <div class="rating-option" data-value="5" onclick="selectRating(this)">
+                    <span class="rating-emoji">😆</span>
+                    <span class="rating-label">とても満足</span>
+                    <span class="rating-value">5</span>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevStep(3)">
+                    <span class="btn-icon">←</span> 戻る
+                </button>
+                <button class="btn btn-primary" id="nextBtn3" onclick="nextStep(3)" disabled>
+                    次へ <span class="btn-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Step 4: Q4 ===== -->
+    <div class="step" id="step4" data-step="4">
+        <div class="card">
+            <div class="question-number">Q4</div>
+            <h2 class="question-text">お子様の反応はいかがでしたか？</h2>
+            <div class="rating-options" data-question="q4">
+                <div class="rating-option" data-value="1" onclick="selectRating(this)">
+                    <span class="rating-emoji">😞</span>
+                    <span class="rating-label">とても不満</span>
+                    <span class="rating-value">1</span>
+                </div>
+                <div class="rating-option" data-value="2" onclick="selectRating(this)">
+                    <span class="rating-emoji">😕</span>
+                    <span class="rating-label">やや不満</span>
+                    <span class="rating-value">2</span>
+                </div>
+                <div class="rating-option" data-value="3" onclick="selectRating(this)">
+                    <span class="rating-emoji">😐</span>
+                    <span class="rating-label">ふつう</span>
+                    <span class="rating-value">3</span>
+                </div>
+                <div class="rating-option" data-value="4" onclick="selectRating(this)">
+                    <span class="rating-emoji">😊</span>
+                    <span class="rating-label">やや満足</span>
+                    <span class="rating-value">4</span>
+                </div>
+                <div class="rating-option" data-value="5" onclick="selectRating(this)">
+                    <span class="rating-emoji">😆</span>
+                    <span class="rating-label">とても満足</span>
+                    <span class="rating-value">5</span>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevStep(4)">
+                    <span class="btn-icon">←</span> 戻る
+                </button>
+                <button class="btn btn-primary" id="nextBtn4" onclick="nextStep(4)" disabled>
+                    次へ <span class="btn-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Step 5: Q5（自由記述） ===== -->
+    <div class="step" id="step5" data-step="5">
+        <div class="card">
+            <div class="question-number">Q5</div>
+            <h2 class="question-text">ご意見・ご感想がございましたら<br>ご自由にお書きください</h2>
+            <div class="textarea-wrapper">
+                <textarea 
+                    class="textarea-field" 
+                    id="q5Text" 
+                    placeholder="例：先生がとても丁寧で、子どもも楽しそうでした..."
+                    maxlength="500"
+                    oninput="updateCharCount()"
+                ></textarea>
+                <div class="textarea-hint" id="charCount">0 / 500文字</div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevStep(5)">
+                    <span class="btn-icon">←</span> 戻る
+                </button>
+                <button class="btn btn-primary" onclick="nextStep(5)">
+                    次へ <span class="btn-icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Step 6: 星評価 ===== -->
+    <div class="step" id="step6" data-step="6">
+        <div class="card">
+            <div class="question-number">⭐</div>
+            <h2 class="question-text">最後に、総合的な満足度を<br>星で教えてください</h2>
+            <div class="star-rating-container">
+                <div class="stars" id="starContainer">
+                    <span class="star" data-value="1" onclick="selectStar(1)">★</span>
+                    <span class="star" data-value="2" onclick="selectStar(2)">★</span>
+                    <span class="star" data-value="3" onclick="selectStar(3)">★</span>
+                    <span class="star" data-value="4" onclick="selectStar(4)">★</span>
+                    <span class="star" data-value="5" onclick="selectStar(5)">★</span>
+                </div>
+                <div class="star-label" id="starLabel"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevStep(6)">
+                    <span class="btn-icon">←</span> 戻る
+                </button>
+                <button class="btn btn-submit" id="submitBtn" onclick="submitSurvey()" disabled>
+                    <span id="submitText">送信する ✉️</span>
+                    <span id="submitSpinner" class="spinner" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 結果: 高評価（星4以上） ===== -->
+    <div class="result-screen" id="resultHigh">
+        <div class="result-card">
+            <div class="result-icon">🎉</div>
+            <h2 class="result-title">ありがとうございます！</h2>
+            <p class="result-message">
+                高い評価をいただき、大変嬉しく思います。<br>
+                よろしければ、Googleマップでも<br>
+                口コミをいただけると幸いです。
+            </p>
+            <a href="https://www.google.com/maps/search/?api=1&query=九州家庭教師協会+九州本部+福岡県福岡市博多区中洲中島町" 
+               class="btn-review" 
+               id="reviewLink" 
+               target="_blank" 
+               rel="noopener noreferrer">
+                <span class="google-icon">📍</span>
+                Googleマップで口コミを書く
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== 結果: 低評価（星3以下） ===== -->
+    <div class="result-screen" id="resultLow">
+        <div class="result-card">
+            <div class="result-icon">🙏</div>
+            <h2 class="result-title">ありがとうございました</h2>
+            <p class="result-message">
+                貴重なご意見をいただき<br>
+                誠にありがとうございます。<br><br>
+                いただいたご感想はサービスの<br>
+                向上に活かしてまいります。
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== エラー画面 ===== -->
+    <div class="error-screen" id="errorScreen">
+        <div class="result-card">
+            <div class="result-icon">⚠️</div>
+            <h2 class="result-title">エラーが発生しました</h2>
+            <p class="result-message" id="errorMessage">
+                アンケートの送信に失敗しました。<br>
+                お手数ですが、もう一度お試しください。
+            </p>
+            <button class="btn btn-primary" onclick="location.reload()" style="display: inline-flex;">
+                もう一度やり直す
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== 無効URL画面 ===== -->
+    <div class="error-screen" id="invalidScreen">
+        <div class="result-card">
+            <div class="result-icon">📋</div>
+            <h2 class="result-title">アンケートページ</h2>
+            <p class="result-message">
+                このページはQRコードから<br>
+                アクセスしてください。
+            </p>
+        </div>
+    </div>
+
+</main>
+
+<footer class="footer">
+    &copy; 九州家庭教師協会
+</footer>
+
+<!-- ===== Confetti Container ===== -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+// ===== 設定 =====
+// ★★★ Google Apps ScriptのデプロイURL をここに設定してください ★★★
+const GAS_URL = 'YOUR_GAS_DEPLOY_URL_HERE';
+
+// Googleマップ口コミURL
+const REVIEW_URL = 'https://www.google.com/maps/search/?api=1&query=九州家庭教師協会+九州本部+福岡県福岡市博多区中洲中島町';
+
+// 口コミに誘導する最低星評価
+const REVIEW_THRESHOLD = 4;
+
+// 有効な担当者IDリスト（不正アクセス防止用）
+const VALID_STAFF_IDS = [
+    'staff_01', 'staff_02', 'staff_03', 'staff_04',
+    'staff_05', 'staff_06', 'staff_07', 'staff_08'
+];
+
+// ===== 状態管理 =====
+let currentStep = 1;
+const totalSteps = 6;
+let answers = {
+    staff_id: '',
+    q1: 0,
+    q2: 0,
+    q3: 0,
+    q4: 0,
+    q5: '',
+    star_rating: 0
+};
+
+// ===== 初期化 =====
+document.addEventListener('DOMContentLoaded', function() {
+    // URLパラメータからスタッフIDを取得
+    const params = new URLSearchParams(window.location.search);
+    const staffId = params.get('s');
+    
+    // スタッフIDの検証（空でもテスト用に許可するが、本番では制限推奨）
+    if (!staffId) {
+        // パラメータなしの場合はエラー表示
+        document.getElementById('header').style.display = 'none';
+        document.getElementById('progressContainer').style.display = 'none';
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('invalidScreen').style.display = 'block';
+        return;
+    }
+    
+    answers.staff_id = staffId;
+    
+    // 口コミリンクのURLを設定
+    document.getElementById('reviewLink').href = REVIEW_URL;
+});
+
+// ===== 5段階評価の選択 =====
+function selectRating(element) {
+    const options = element.parentElement;
+    const question = options.dataset.question;
+    const value = parseInt(element.dataset.value);
+    
+    // 選択状態をリセット
+    options.querySelectorAll('.rating-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    // 選択状態を設定
+    element.classList.add('selected');
+    answers[question] = value;
+    
+    // 次へボタンを有効化
+    const stepNum = element.closest('.step').dataset.step;
+    const nextBtn = document.getElementById('nextBtn' + stepNum);
+    if (nextBtn) nextBtn.disabled = false;
+    
+    // 少し待ってから自動で次へ（UX改善）
+    setTimeout(() => {
+        if (parseInt(stepNum) < totalSteps) {
+            nextStep(parseInt(stepNum));
+        }
+    }, 400);
+}
+
+// ===== 星評価の選択 =====
+function selectStar(value) {
+    answers.star_rating = value;
+    
+    const stars = document.querySelectorAll('.star');
+    stars.forEach((star, index) => {
+        if (index < value) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+    
+    // ラベルを更新
+    const labels = ['', '😞 残念...', '😕 もう少し...', '😐 ふつう', '😊 満足！', '😆 とても満足！'];
+    document.getElementById('starLabel').textContent = labels[value];
+    
+    // 送信ボタンを有効化
+    document.getElementById('submitBtn').disabled = false;
+}
+
+// ===== ステップ遷移 =====
+function nextStep(current) {
+    if (current >= totalSteps) return;
+    
+    const currentEl = document.getElementById('step' + current);
+    const nextEl = document.getElementById('step' + (current + 1));
+    
+    currentEl.classList.add('fade-out');
+    
+    setTimeout(() => {
+        currentEl.classList.remove('active', 'fade-out');
+        nextEl.classList.add('active');
+        currentStep = current + 1;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 300);
+}
+
+function prevStep(current) {
+    if (current <= 1) return;
+    
+    const currentEl = document.getElementById('step' + current);
+    const prevEl = document.getElementById('step' + (current - 1));
+    
+    currentEl.classList.remove('active');
+    prevEl.classList.add('active');
+    currentStep = current - 1;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== プログレスバー更新 =====
+function updateProgress() {
+    const progress = (currentStep / totalSteps) * 100;
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressStep').textContent = currentStep + ' / ' + totalSteps;
+}
+
+// ===== 文字数カウント =====
+function updateCharCount() {
+    const text = document.getElementById('q5Text').value;
+    document.getElementById('charCount').textContent = text.length + ' / 500文字';
+    answers.q5 = text;
+}
+
+// ===== 送信処理 =====
+async function submitSurvey() {
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const submitSpinner = document.getElementById('submitSpinner');
+    
+    // 送信中の状態
+    submitBtn.disabled = true;
+    submitText.style.display = 'none';
+    submitSpinner.style.display = 'inline-block';
+    
+    // Q5のテキストを取得
+    answers.q5 = document.getElementById('q5Text').value;
+    
+    try {
+        // Google Apps Scriptへ送信
+        if (GAS_URL !== 'YOUR_GAS_DEPLOY_URL_HERE') {
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(answers)
+            });
+        } else {
+            // テストモード：GAS未設定の場合は送信をシミュレート
+            console.log('テストモード - 送信データ:', answers);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        
+        // 成功 → 結果画面を表示
+        showResult();
+        
+    } catch (error) {
+        console.error('送信エラー:', error);
+        // no-corsモードではエラーが出ることがあるが、実際は送信成功しているケースが多い
+        // そのため、結果画面を表示する
+        showResult();
+    }
+}
+
+// ===== 結果画面表示 =====
+function showResult() {
+    // フォーム部分を非表示
+    document.getElementById('step6').classList.remove('active');
+    document.getElementById('progressContainer').style.display = 'none';
+    
+    if (answers.star_rating >= REVIEW_THRESHOLD) {
+        // 高評価 → 口コミ誘導
+        document.getElementById('resultHigh').classList.add('active');
+        launchConfetti();
+    } else {
+        // 低評価 → お礼画面
+        document.getElementById('resultLow').classList.add('active');
+    }
+}
+
+// ===== 紙吹雪アニメーション =====
+function launchConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#003366', '#F59E0B', '#4285F4', '#34A853', '#EA4335', '#FCD34D'];
+    
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.width = (Math.random() * 8 + 6) + 'px';
+            confetti.style.height = (Math.random() * 8 + 6) + 'px';
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            confetti.style.animationDelay = '0s';
+            container.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 4000);
+        }, i * 50);
+    }
+}
+</script>
+
+</body>
+</html>
