@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>体験学習アンケート｜九州家庭教師協会</title>
-    <meta name="description" content="九州家庭教師協会の体験学習に関するアンケートです。ぜひご感想をお聞かせください。">
+    <title>体験学習アンケート</title>
+    <meta name="description" content="体験学習に関するアンケートです。ぜひご感想をお聞かせください。">
     <meta name="robots" content="noindex, nofollow">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -636,7 +636,7 @@
 
 <!-- ===== ヘッダー ===== -->
 <header class="header" id="header">
-    <div class="header-logo">九州家庭教師協会</div>
+    <div class="header-logo" id="headerOrgLabel">九州家庭教師協会</div>
     <h1 class="header-title">体験学習アンケート</h1>
 </header>
 
@@ -941,7 +941,7 @@
 </main>
 
 <footer class="footer">
-    &copy; 九州家庭教師協会
+    &copy; <span id="footerOrgLabel">九州家庭教師協会</span>
 </footer>
 
 <!-- ===== Confetti Container ===== -->
@@ -952,23 +952,30 @@
 // ★★★ Google Apps ScriptのデプロイURL をここに設定してください ★★★
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwGSQdjky8lUUsnRH5XcEwEYjPY3PCA0KCHaCv3I1-VG9AIESy9Jh4wxKnr2Ws1Np4PKQ/exec';
 
-// Googleマップ口コミURL（g.page形式 - PC/スマホ両対応）
-const REVIEW_URL = 'https://g.page/r/CUHOtRUmWHqBEBE/review';
+// 組織別設定（ヘッダー表記・口コミ誘導先）
+const ORG_CONFIG = {
+    kyushu: {
+        label: '九州家庭教師協会',
+        reviewUrl: 'https://g.page/r/CUHOtRUmWHqBEBE/review'
+    },
+    zenkoku: {
+        label: '全国家庭教師協会',
+        reviewUrl: 'https://g.page/r/CTT8TfFIKzhqEAE/review'
+    }
+};
+
+// orgパラメータが無い・不正な場合のフォールバック（既存QRコードを壊さないため九州）
+const DEFAULT_ORG = 'kyushu';
 
 // 口コミに誘導する最低星評価
 const REVIEW_THRESHOLD = 4;
-
-// 有効な担当者IDリスト（不正アクセス防止用）
-const VALID_STAFF_IDS = [
-    'staff_01', 'staff_02', 'staff_03', 'staff_04',
-    'staff_05', 'staff_06', 'staff_07', 'staff_08'
-];
 
 // ===== 状態管理 =====
 let currentStep = 1;
 const totalSteps = 6;
 let answers = {
     staff_id: '',
+    org: '',
     q1: 0,
     q2: 0,
     q3: 0,
@@ -979,11 +986,16 @@ let answers = {
 
 // ===== 初期化 =====
 document.addEventListener('DOMContentLoaded', function() {
-    // URLパラメータからスタッフIDを取得
+    // URLパラメータからスタッフIDと組織を取得
     const params = new URLSearchParams(window.location.search);
     const staffId = params.get('s');
-    
-    // スタッフIDの検証（空でもテスト用に許可するが、本番では制限推奨）
+    const orgParam = params.get('org');
+
+    // 組織の解決（未指定・不正な値は DEFAULT_ORG にフォールバック）
+    const org = ORG_CONFIG.hasOwnProperty(orgParam) ? orgParam : DEFAULT_ORG;
+    const orgCfg = ORG_CONFIG[org];
+
+    // スタッフIDの検証
     if (!staffId) {
         // パラメータなしの場合はエラー表示
         document.getElementById('header').style.display = 'none';
@@ -992,11 +1004,21 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('invalidScreen').style.display = 'block';
         return;
     }
-    
+
     answers.staff_id = staffId;
-    
+    answers.org = org;
+
+    // 組織別表示の反映
+    document.getElementById('headerOrgLabel').textContent = orgCfg.label;
+    document.getElementById('footerOrgLabel').textContent = orgCfg.label;
+    document.title = '体験学習アンケート｜' + orgCfg.label;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+        metaDesc.setAttribute('content', orgCfg.label + 'の体験学習に関するアンケートです。ぜひご感想をお聞かせください。');
+    }
+
     // 口コミリンクのURLを設定
-    document.getElementById('reviewLink').href = REVIEW_URL;
+    document.getElementById('reviewLink').href = orgCfg.reviewUrl;
 });
 
 // ===== 5段階評価の選択 =====
