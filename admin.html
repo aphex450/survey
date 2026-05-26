@@ -387,7 +387,7 @@
 
 <header class="header">
     <h1>📱 QRコード管理画面</h1>
-    <p>九州家庭教師協会｜アンケートシステム</p>
+    <p><span id="headerOrgLabel">九州家庭教師協会</span>｜アンケートシステム</p>
 </header>
 
 <div class="container">
@@ -395,6 +395,14 @@
     <!-- ===== 基本設定 ===== -->
     <div class="config-section">
         <h2>⚙️ 基本設定</h2>
+        <div class="form-group">
+            <label>組織</label>
+            <select id="orgSelect" onchange="onOrgChange()" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.95rem;background:var(--card-bg);">
+                <option value="kyushu">九州家庭教師協会</option>
+                <option value="zenkoku">全国家庭教師協会</option>
+            </select>
+            <div class="form-hint">QRコードを発行する対象の組織を選択してください。組織を切り替えるとスタッフリストの初期値が変わります。</div>
+        </div>
         <div class="form-group">
             <label>アンケートページURL</label>
             <input type="url" id="baseUrl" value="" placeholder="https://username.github.io/survey/">
@@ -434,28 +442,67 @@
 </div>
 
 <footer class="footer">
-    &copy; 九州家庭教師協会 ― 管理者専用ページ
+    &copy; <span id="footerOrgLabel">九州家庭教師協会</span> ― 管理者専用ページ
 </footer>
 
 <script>
-// ===== 初期スタッフデータ =====
-const defaultStaff = [
-    { id: 'staff_01', name: '担当者A' },
-    { id: 'staff_02', name: '担当者B' },
-    { id: 'staff_03', name: '担当者C' },
-    { id: 'staff_04', name: '担当者D' },
-    { id: 'staff_05', name: '担当者E' },
-    { id: 'staff_06', name: '担当者F' },
-    { id: 'staff_07', name: '担当者G' },
-    { id: 'staff_08', name: '担当者H' },
-];
+// ===== 組織別の初期スタッフデータ =====
+// 担当者名は公開URL（GitHub Pages）に出るため、admin運用時にスプレッドシートから貼り付ける想定でプレースホルダーのまま。
+const defaultStaffByOrg = {
+    kyushu: [
+        { id: '4y5r1', name: '担当者A' },
+        { id: '4y5r2', name: '担当者B' },
+        { id: '4y5r3', name: '担当者C' },
+        { id: '4y5r4', name: '担当者D' },
+        { id: '4y5r5', name: '担当者E' },
+        { id: '4y5r6', name: '担当者F' },
+    ],
+    zenkoku: [
+        { id: '8y5r1', name: '担当者A' },
+        { id: '8y5r2', name: '担当者B' },
+        { id: '8y5r3', name: '担当者C' },
+        { id: '8y5r4', name: '担当者D' },
+        { id: '8y5r5', name: '担当者E' },
+        { id: '8y5r6', name: '担当者F' },
+    ]
+};
+
+const ORG_LABEL = {
+    kyushu: '九州家庭教師協会',
+    zenkoku: '全国家庭教師協会'
+};
 
 let staffCount = 0;
 
 // ===== 初期化 =====
 document.addEventListener('DOMContentLoaded', function() {
-    defaultStaff.forEach(staff => addStaffRow(staff.id, staff.name));
+    loadStaffForOrg(document.getElementById('orgSelect').value);
 });
+
+// ===== 組織変更時の処理 =====
+function onOrgChange() {
+    const org = document.getElementById('orgSelect').value;
+
+    // ヘッダー・フッター表記を組織に合わせて更新
+    document.getElementById('headerOrgLabel').textContent = ORG_LABEL[org] || ORG_LABEL.kyushu;
+    document.getElementById('footerOrgLabel').textContent = ORG_LABEL[org] || ORG_LABEL.kyushu;
+
+    // 既存QR出力をクリア（組織が変わったので再生成が必要）
+    document.getElementById('qrGrid').innerHTML = '';
+    document.getElementById('qrOutput').classList.remove('visible');
+
+    // スタッフリストを組織別初期値で入れ替え
+    loadStaffForOrg(org);
+}
+
+// ===== スタッフリストを指定組織の初期値でロード =====
+function loadStaffForOrg(org) {
+    const container = document.getElementById('staffContainer');
+    container.innerHTML = '';
+    staffCount = 0;
+    const list = defaultStaffByOrg[org] || defaultStaffByOrg.kyushu;
+    list.forEach(staff => addStaffRow(staff.id, staff.name));
+}
 
 // ===== スタッフ行の追加 =====
 function addStaffRow(id = '', name = '') {
@@ -493,29 +540,30 @@ function renumberRows() {
 // ===== QRコード一括生成 =====
 function generateQRCodes() {
     const baseUrl = document.getElementById('baseUrl').value.trim();
-    
+    const org = document.getElementById('orgSelect').value;
+
     if (!baseUrl) {
         alert('アンケートページのURLを入力してください');
         return;
     }
-    
+
     // 末尾のスラッシュを確認
     const url = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
-    
+
     const rows = document.querySelectorAll('#staffContainer .staff-row');
     const grid = document.getElementById('qrGrid');
     grid.innerHTML = '';
-    
+
     let hasData = false;
-    
+
     rows.forEach(row => {
         const staffId = row.querySelector('.id-input').value.trim();
         const staffName = row.querySelector('.name-input').value.trim();
-        
+
         if (!staffId) return;
         hasData = true;
-        
-        const surveyUrl = url + '?s=' + encodeURIComponent(staffId);
+
+        const surveyUrl = url + '?s=' + encodeURIComponent(staffId) + '&org=' + encodeURIComponent(org);
         
         // QRコード生成
         const qr = qrcode(0, 'M');
