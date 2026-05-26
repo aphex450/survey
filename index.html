@@ -886,13 +886,16 @@
                 よろしければ、Googleマップでも<br>
                 口コミをいただけると幸いです。
             </p>
-            <a href="https://g.page/r/CUHOtRUmWHqBEBE/review" 
-               class="btn-review" 
-               id="reviewLink" 
-               target="_blank" 
+            <p class="result-countdown" id="reviewCountdown" style="font-size:0.95rem;color:var(--primary);font-weight:700;margin:-12px 0 24px;">
+                <span id="reviewCountdownNumber">3</span>秒後にGoogleの口コミページへ移動します...
+            </p>
+            <a href="https://g.page/r/CUHOtRUmWHqBEBE/review"
+               class="btn-review"
+               id="reviewLink"
+               target="_self"
                rel="noopener noreferrer">
                 <span class="google-icon">📍</span>
-                Googleマップで口コミを書く
+                今すぐGoogleで口コミを書く
             </a>
         </div>
     </div>
@@ -1162,15 +1165,35 @@ function showResult() {
     // フォーム部分を非表示
     document.getElementById('step6').classList.remove('active');
     document.getElementById('progressContainer').style.display = 'none';
-    
+
     if (answers.star_rating >= REVIEW_THRESHOLD) {
-        // 高評価 → 口コミ誘導
+        // 高評価 → 口コミ誘導 + 自動遷移
         document.getElementById('resultHigh').classList.add('active');
         launchConfetti();
+        startReviewCountdown();
     } else {
         // 低評価 → お礼画面
         document.getElementById('resultLow').classList.add('active');
     }
+}
+
+// ===== Google口コミページへの自動遷移カウントダウン =====
+function startReviewCountdown() {
+    var seconds = 3;
+    var numberEl = document.getElementById('reviewCountdownNumber');
+    var reviewUrl = document.getElementById('reviewLink').href;
+
+    numberEl.textContent = seconds;
+
+    var timer = setInterval(function() {
+        seconds--;
+        if (seconds <= 0) {
+            clearInterval(timer);
+            window.location.href = reviewUrl;
+        } else {
+            numberEl.textContent = seconds;
+        }
+    }, 1000);
 }
 
 // ===== 紙吹雪アニメーション =====
