@@ -972,6 +972,17 @@ const DEFAULT_ORG = 'kyushu';
 
 // 口コミに誘導する最低星評価
 const REVIEW_THRESHOLD = 4;
+// 項目別（Q1〜Q4）にこの点以下が1つでもあれば、星が高くても口コミに誘導しない（2026-10-19）
+const REVIEW_BLOCK_ITEM_MAX = 2;
+
+// 口コミに誘導するか（総合の星が REVIEW_THRESHOLD 以上、かつ Q1〜Q4 に 1〜REVIEW_BLOCK_ITEM_MAX が無い）
+function isReviewTarget() {
+    if (answers.star_rating < REVIEW_THRESHOLD) return false;
+    return ['q1', 'q2', 'q3', 'q4'].every(function(k) {
+        var v = Number(answers[k]) || 0;
+        return !(v >= 1 && v <= REVIEW_BLOCK_ITEM_MAX);
+    });
+}
 
 // ===== 状態管理 =====
 let currentStep = 1;
@@ -1166,7 +1177,7 @@ function showResult() {
     document.getElementById('step6').classList.remove('active');
     document.getElementById('progressContainer').style.display = 'none';
 
-    if (answers.star_rating >= REVIEW_THRESHOLD) {
+    if (isReviewTarget()) {
         // 高評価 → 口コミ誘導 + 自動遷移
         document.getElementById('resultHigh').classList.add('active');
         launchConfetti();
